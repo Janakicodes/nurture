@@ -1,0 +1,4 @@
+- [Mobile release builds](mobile-release-builds.md) — static Expo builds must choose a free Metro port because workspace previews may already occupy 8081.
+- [Nurture privacy boundary](nurture-privacy-boundary.md) — private pregnancy records stay on-device; only public, non-user-specific guidance remains API-backed.
+- [Nurture anonymous analytics](nurture-anonymous-analytics.md) — analytics is opt-in and fixed-event aggregate-only; never send identifiers or personal health data.
+- [GitHub bulk repository publishing](github-bulk-repository-publishing.md) — use Git source-control credentials for full pushes when connector API writes trigger Cloudflare protection.
