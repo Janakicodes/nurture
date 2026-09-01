@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Nurture — Pregnancy Companion"
+version = "1.0.0"
+id = "artifacts/nurture"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22205
+
+[services.development]
+run = "pnpm --filter @workspace/nurture run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nurture", "run", "build" ]
+publicDir = "artifacts/nurture/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22205"
+BASE_PATH = "/"
