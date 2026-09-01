@@ -1,0 +1,283 @@
+Most of your data is broadly correct, but a few parts are outdated or need clarification before you put this into production for a pregnancy app.
+
+Here’s a scheme-by-scheme verification.
+
+---
+
+# 1. Pradhan Mantri Matru Vandana Yojana (PMMVY)
+
+### Status: Mostly correct, but needs updates
+
+### Correct
+
+* Central benefit amount: ₹5,000 for first living child ✔
+* Age 19+ ✔
+* Aadhaar + bank account ✔
+* Registration through AWC/ASHA ✔
+* MCP card required ✔
+
+### Needs correction/update
+
+#### A) First child only → NOT fully accurate anymore
+
+Under PMMVY 2.0:
+
+* First child → ₹5,000
+* Second child → ₹6,000 IF the second child is a girl child
+
+This was revised under Mission Shakti guidelines. ([PMMVY][1])
+
+So your database should say:
+
+> “Benefit available for first living child. Additional benefit for second child if the second child is a girl child (PMMVY 2.0).”
+
+---
+
+#### B) Installment structure outdated
+
+Your app says:
+
+* Form 1A
+* Form 1B
+* Form 1C
+* 3 installments
+
+That was older PMMVY workflow.
+
+Current PMMVY 2.0 implementation in many states:
+
+* ₹5,000 is often released in 2 installments instead of 3. ([PMMVY][1])
+
+Because implementation varies slightly state-to-state, safest wording is:
+
+> “Installments may vary by state/implementation phase.”
+
+---
+
+#### C) Husband Aadhaar may no longer be mandatory
+
+Recent updates indicate husband Aadhaar requirement has been relaxed/removed in newer PMMVY workflows. ([PMMVY][1])
+
+So instead of:
+
+> “Aadhaar (mother + husband)”
+
+Use:
+
+> “Mother’s Aadhaar mandatory; husband Aadhaar may be requested in some states.”
+
+---
+
+#### D) URL
+
+Your URL is correct:
+
+[PMMVY Official Portal](https://pmmvy.wcd.gov.in?utm_source=chatgpt.com)
+
+---
+
+# 2. Maternity Benefit Act 1961
+
+### Status: Accurate
+
+Your data is good.
+
+### Minor additions you should consider
+
+Add:
+
+* Applies mainly to women not covered under ESIC
+* Includes work-from-home provision where applicable
+* Includes crèche facility requirement for establishments with 50+ employees
+
+Your core eligibility and 26-week leave details are correct.
+
+---
+
+# 3. Employees' State Insurance (ESIC) Maternity Benefit
+
+### Status: Mostly accurate
+
+### Correct
+
+* 26 weeks wages ✔
+* 70 days contribution rule ✔
+* ESIC insured employee ✔
+
+### Needs adjustment
+
+#### A) “Applicable for first two deliveries”
+
+This restriction is not clearly stated in official ESIC maternity wording the way PMMVY does it.
+
+Safer wording:
+
+> “Generally available as per ESIC maternity eligibility rules.”
+
+---
+
+#### B) Medical bonus ₹5,000
+
+Still appears correct currently, but ESIC revisions occasionally happen. Your figure is acceptable for now. ([ESIC][2])
+
+---
+
+#### C) Forms
+
+Your form flow may vary regionally.
+
+Instead of rigidly listing:
+
+* Form 20
+* Form 10
+* Form 17
+
+Safer wording:
+
+> “Required ESIC forms as guided by employer/branch office.”
+
+Because employers increasingly do parts digitally now.
+
+---
+
+#### D) URL
+
+Use:
+
+[ESIC Official Website](https://www.esic.gov.in?utm_source=chatgpt.com)
+
+---
+
+# 4. Janani Suraksha Yojana (JSY)
+
+### Status: Partially accurate but oversimplified
+
+### Important correction
+
+JSY amounts differ between:
+
+* Low Performing States (LPS)
+* High Performing States (HPS)
+* Rural vs Urban
+
+Your current wording:
+
+> ₹1,400 rural / ₹1,000 urban
+
+This only applies to LPS states.
+
+You should instead structure it like:
+
+| Category  | Amount |
+| --------- | ------ |
+| Rural LPS | ₹1,400 |
+| Urban LPS | ₹1,000 |
+| Rural HPS | ₹700   |
+| Urban HPS | ₹600   |
+
+This is important for a pan-India app.
+
+---
+
+### Also important
+
+Eligibility rules differ between LPS and HPS:
+
+* In many HPS states, BPL/SC/ST restrictions apply
+* In LPS states, all pregnant women delivering in govt facilities may qualify
+
+So:
+
+> “Must belong to BPL family”
+
+is not universally accurate nationwide.
+
+Better wording:
+
+> “Eligibility varies by state category (LPS/HPS) and socio-economic status.”
+
+---
+
+#### URL
+
+Instead of the incomplete URL:
+
+> [https://nhm.gov.in/](https://nhm.gov.in/)...
+
+Use:
+
+[National Health Mission](https://nhm.gov.in?utm_source=chatgpt.com)
+
+---
+
+# 5. ASHA Support Services
+
+### Status: Accurate
+
+This section is fine.
+
+Minor improvement:
+ASHA workers sometimes receive incentives from government schemes for:
+
+* institutional deliveries
+* immunization follow-up
+* ANC tracking
+
+But the mother does not directly receive cash under “ASHA support”.
+
+Your wording is good.
+
+---
+
+# Additional important recommendations for your app
+
+## Add disclaimer
+
+You should absolutely add:
+
+> “Benefits, eligibility, and amounts may vary by state and may change based on government updates.”
+
+This is essential legally and practically.
+
+---
+
+## Add state-specific layers later
+
+Many states provide additional maternity schemes:
+
+* Tamil Nadu Dr. Muthulakshmi Scheme
+* Odisha Mamata Scheme
+* Kerala maternal benefit programs
+* Karnataka Mathru Vandana supplements
+
+Your architecture should support:
+
+* Central scheme
+* State top-up
+* Employer benefit
+* Insurance benefit
+
+simultaneously.
+
+---
+
+# Overall Accuracy Score
+
+| Scheme                | Accuracy |
+| --------------------- | -------- |
+| PMMVY                 | 75%      |
+| Maternity Benefit Act | 95%      |
+| ESIC                  | 85%      |
+| JSY                   | 70%      |
+| ASHA Support          | 95%      |
+
+The biggest fixes needed are:
+
+1. PMMVY 2.0 updates
+2. JSY LPS/HPS differentiation
+3. Avoid hardcoded form workflows that may change statewise
+
+The rest is solid for an MVP.
+
+[1]: https://pmmvy.org/?utm_source=chatgpt.com "PMMVY Login, Eligibility, Status Check & Online Registration"
+[2]: https://web.esic.gov.in/hi/web/esic/benefits?utm_source=chatgpt.com "Benefits - Esic"
