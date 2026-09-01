@@ -1,0 +1,1056 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Nurture pregnancy companion API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: profile
+    description: User profile and onboarding
+  - name: weekly-content
+    description: Weekly pregnancy guidance content
+  - name: symptoms
+    description: Symptom tracking
+  - name: kicks
+    description: Kick/fetal movement counter
+  - name: appointments
+    description: Appointment management
+  - name: benefits
+    description: India maternity government benefits
+  - name: dashboard
+    description: Dashboard summary and aggregations
+  - name: admin
+    description: Admin content management
+  - name: analytics
+    description: Anonymous, opt-in product analytics
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  # ───── PROFILE / ONBOARDING ─────
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get current user profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+        "404":
+          description: No profile yet
+    post:
+      operationId: createProfile
+      tags: [profile]
+      summary: Create user profile during onboarding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProfileBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+    put:
+      operationId: updateProfile
+      tags: [profile]
+      summary: Update user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+
+  # ───── WEEKLY CONTENT ─────
+  /weekly-content:
+    get:
+      operationId: listWeeklyContent
+      tags: [weekly-content]
+      summary: List all weekly content entries (admin)
+      responses:
+        "200":
+          description: All weeks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WeeklyContent"
+
+  /weekly-content/{week}:
+    get:
+      operationId: getWeeklyContent
+      tags: [weekly-content]
+      summary: Get content for a specific pregnancy week (1-42)
+      parameters:
+        - name: week
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 42
+      responses:
+        "200":
+          description: Weekly content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklyContent"
+        "404":
+          description: Not found
+    put:
+      operationId: upsertWeeklyContent
+      tags: [weekly-content]
+      summary: Create or update weekly content (admin)
+      parameters:
+        - name: week
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertWeeklyContentBody"
+      responses:
+        "200":
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeeklyContent"
+
+  # ───── SYMPTOMS ─────
+  /symptoms:
+    get:
+      operationId: listSymptoms
+      tags: [symptoms]
+      summary: List symptom logs for the user
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Symptom logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SymptomLog"
+    post:
+      operationId: createSymptomLog
+      tags: [symptoms]
+      summary: Log a symptom
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSymptomLogBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SymptomLog"
+
+  /symptoms/{id}:
+    delete:
+      operationId: deleteSymptomLog
+      tags: [symptoms]
+      summary: Delete a symptom log entry
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /symptoms/today:
+    get:
+      operationId: getTodaySymptoms
+      tags: [symptoms]
+      summary: Get today's logged symptoms
+      responses:
+        "200":
+          description: Today's symptoms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SymptomLog"
+
+  # ───── KICK COUNTER ─────
+  /kicks:
+    get:
+      operationId: listKickSessions
+      tags: [kicks]
+      summary: List kick counter sessions
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Kick sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/KickSession"
+    post:
+      operationId: createKickSession
+      tags: [kicks]
+      summary: Start or record a kick session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateKickSessionBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KickSession"
+
+  /kicks/today:
+    get:
+      operationId: getTodayKicks
+      tags: [kicks]
+      summary: Get today's kick session
+      responses:
+        "200":
+          description: Today's session or null
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KickSession"
+        "404":
+          description: No session today
+
+  /kicks/{id}:
+    patch:
+      operationId: updateKickSession
+      tags: [kicks]
+      summary: Increment kick count or reset session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateKickSessionBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/KickSession"
+
+  # ───── APPOINTMENTS ─────
+  /appointments:
+    get:
+      operationId: listAppointments
+      tags: [appointments]
+      summary: List all appointments for user
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [upcoming, completed, all]
+            default: all
+      responses:
+        "200":
+          description: Appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      summary: Create a new appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentBody"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /appointments/{id}:
+    get:
+      operationId: getAppointment
+      tags: [appointments]
+      summary: Get a single appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+    patch:
+      operationId: updateAppointment
+      tags: [appointments]
+      summary: Update an appointment (mark complete, change date, etc.)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppointmentBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+    delete:
+      operationId: deleteAppointment
+      tags: [appointments]
+      summary: Delete an appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /appointments/upcoming:
+    get:
+      operationId: getUpcomingAppointments
+      tags: [appointments]
+      summary: Get next 5 upcoming appointments
+      responses:
+        "200":
+          description: Upcoming
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Appointment"
+
+  # ───── BENEFITS ─────
+  /benefits:
+    get:
+      operationId: listBenefits
+      tags: [benefits]
+      summary: List all maternity benefit schemes
+      responses:
+        "200":
+          description: Benefits list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Benefit"
+
+  /benefits/{id}:
+    get:
+      operationId: getBenefit
+      tags: [benefits]
+      summary: Get a single benefit scheme detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Benefit detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Benefit"
+
+  /benefits/check-eligibility:
+    post:
+      operationId: checkEligibility
+      tags: [benefits]
+      summary: Check eligibility for maternity benefits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EligibilityCheckBody"
+      responses:
+        "200":
+          description: Eligibility results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EligibilityResult"
+
+  # ───── DASHBOARD ─────
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary (week, trimester, baby size, stats)
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      summary: Get recent activity feed (symptoms, kicks, appointments)
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  # ───── ANONYMOUS ANALYTICS ─────
+  /analytics/events:
+    post:
+      operationId: recordAnalyticsEvent
+      tags: [analytics]
+      summary: Record an anonymous opt-in product event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyticsEventInput"
+      responses:
+        "202":
+          description: Event accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsEventReceipt"
+        "400":
+          description: Unsupported event
+
+  # ───── ADMIN ─────
+  /admin/analytics:
+    get:
+      operationId: getAdminAnalytics
+      tags: [admin]
+      summary: Get analytics overview for admin dashboard
+      responses:
+        "200":
+          description: Analytics data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAnalytics"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    # ── PROFILE ──
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        lmpDate:
+          type: string
+          format: date
+          nullable: true
+        currentWeek:
+          type: integer
+        trimester:
+          type: integer
+        isFirstPregnancy:
+          type: boolean
+        notificationsEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, dueDate, currentWeek, trimester, isFirstPregnancy, notificationsEnabled, createdAt]
+
+    CreateProfileBody:
+      type: object
+      properties:
+        name:
+          type: string
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+        lmpDate:
+          type: string
+          format: date
+          nullable: true
+        isFirstPregnancy:
+          type: boolean
+        notificationsEnabled:
+          type: boolean
+      required: [isFirstPregnancy, notificationsEnabled]
+
+    UpdateProfileBody:
+      type: object
+      properties:
+        name:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        lmpDate:
+          type: string
+          format: date
+        isFirstPregnancy:
+          type: boolean
+        notificationsEnabled:
+          type: boolean
+
+    # ── WEEKLY CONTENT ──
+    WeeklyContent:
+      type: object
+      properties:
+        id:
+          type: integer
+        week:
+          type: integer
+        title:
+          type: string
+        babySizeComparison:
+          type: string
+        babyLength:
+          type: string
+          nullable: true
+        babyWeight:
+          type: string
+          nullable: true
+        developmentSummary:
+          type: string
+        motherChanges:
+          type: string
+        weeklyActions:
+          type: array
+          items:
+            type: string
+        nutritionTips:
+          type: array
+          items:
+            type: string
+        warningSymptoms:
+          type: array
+          items:
+            type: string
+        trimester:
+          type: integer
+      required: [id, week, title, babySizeComparison, developmentSummary, motherChanges, weeklyActions, nutritionTips, warningSymptoms, trimester]
+
+    UpsertWeeklyContentBody:
+      type: object
+      properties:
+        title:
+          type: string
+        babySizeComparison:
+          type: string
+        babyLength:
+          type: string
+          nullable: true
+        babyWeight:
+          type: string
+          nullable: true
+        developmentSummary:
+          type: string
+        motherChanges:
+          type: string
+        weeklyActions:
+          type: array
+          items:
+            type: string
+        nutritionTips:
+          type: array
+          items:
+            type: string
+        warningSymptoms:
+          type: array
+          items:
+            type: string
+      required: [title, babySizeComparison, developmentSummary, motherChanges, weeklyActions, nutritionTips, warningSymptoms]
+
+    # ── SYMPTOMS ──
+    SymptomLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        symptomType:
+          type: string
+        severity:
+          type: string
+          enum: [mild, moderate, severe]
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        loggedAt:
+          type: string
+          format: date-time
+      required: [id, symptomType, loggedAt]
+
+    CreateSymptomLogBody:
+      type: object
+      properties:
+        symptomType:
+          type: string
+        severity:
+          type: string
+          enum: [mild, moderate, severe]
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [symptomType]
+
+    # ── KICK SESSION ──
+    KickSession:
+      type: object
+      properties:
+        id:
+          type: integer
+        kickCount:
+          type: integer
+        sessionDate:
+          type: string
+          format: date
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [id, kickCount, sessionDate]
+
+    CreateKickSessionBody:
+      type: object
+      properties:
+        sessionDate:
+          type: string
+          format: date
+        kickCount:
+          type: integer
+          default: 0
+        notes:
+          type: string
+          nullable: true
+      required: [sessionDate]
+
+    UpdateKickSessionBody:
+      type: object
+      properties:
+        kickCount:
+          type: integer
+        endedAt:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+
+    # ── APPOINTMENTS ──
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        appointmentType:
+          type: string
+          enum: [checkup, ultrasound, lab_test, vaccination, other]
+        appointmentDate:
+          type: string
+          format: date
+        appointmentTime:
+          type: string
+          nullable: true
+        doctorName:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        doctorRemarks:
+          type: string
+          nullable: true
+        patientQuestions:
+          type: string
+          nullable: true
+        reminderEnabled:
+          type: boolean
+        status:
+          type: string
+          enum: [upcoming, completed, cancelled]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, title, appointmentType, appointmentDate, reminderEnabled, status, createdAt]
+
+    CreateAppointmentBody:
+      type: object
+      properties:
+        title:
+          type: string
+        appointmentType:
+          type: string
+          enum: [checkup, ultrasound, lab_test, vaccination, other]
+        appointmentDate:
+          type: string
+          format: date
+        appointmentTime:
+          type: string
+          nullable: true
+        doctorName:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        doctorRemarks:
+          type: string
+          nullable: true
+        patientQuestions:
+          type: string
+          nullable: true
+        reminderEnabled:
+          type: boolean
+      required: [title, appointmentType, appointmentDate, reminderEnabled]
+
+    UpdateAppointmentBody:
+      type: object
+      properties:
+        title:
+          type: string
+        appointmentType:
+          type: string
+          enum: [checkup, ultrasound, lab_test, vaccination, other]
+        appointmentDate:
+          type: string
+          format: date
+        appointmentTime:
+          type: string
+          nullable: true
+        doctorName:
+          type: string
+          nullable: true
+        location:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        doctorRemarks:
+          type: string
+          nullable: true
+        patientQuestions:
+          type: string
+          nullable: true
+        reminderEnabled:
+          type: boolean
+        status:
+          type: string
+          enum: [upcoming, completed, cancelled]
+
+    # ── BENEFITS ──
+    Benefit:
+      type: object
+      properties:
+        id:
+          type: integer
+        schemeName:
+          type: string
+        schemeCode:
+          type: string
+        description:
+          type: string
+        benefitAmount:
+          type: string
+          nullable: true
+        eligibilityCriteria:
+          type: array
+          items:
+            type: string
+        requiredDocuments:
+          type: array
+          items:
+            type: string
+        applicationSteps:
+          type: array
+          items:
+            type: string
+        officialUrl:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        targetGroup:
+          type: string
+          enum: [all, bpl, government_employee, private_sector, unorganized_sector]
+      required: [id, schemeName, schemeCode, description, eligibilityCriteria, requiredDocuments, applicationSteps, isActive, targetGroup]
+
+    EligibilityCheckBody:
+      type: object
+      properties:
+        employmentType:
+          type: string
+          enum: [government, private, self_employed, homemaker, other]
+        isBPL:
+          type: boolean
+        hasAadhar:
+          type: boolean
+        hasBankAccount:
+          type: boolean
+        isFirstTwoLivebirths:
+          type: boolean
+        state:
+          type: string
+      required: [employmentType, isBPL, hasAadhar, hasBankAccount, isFirstTwoLivebirths]
+
+    EligibilityResult:
+      type: object
+      properties:
+        benefitId:
+          type: integer
+        schemeName:
+          type: string
+        isEligible:
+          type: boolean
+        reason:
+          type: string
+          nullable: true
+        nextSteps:
+          type: array
+          items:
+            type: string
+      required: [benefitId, schemeName, isEligible, nextSteps]
+
+    # ── DASHBOARD ──
+    DashboardSummary:
+      type: object
+      properties:
+        currentWeek:
+          type: integer
+        trimester:
+          type: integer
+        daysUntilDue:
+          type: integer
+        dueDate:
+          type: string
+          format: date
+        babySizeComparison:
+          type: string
+        babyLength:
+          type: string
+          nullable: true
+        babyWeight:
+          type: string
+          nullable: true
+        developmentHighlight:
+          type: string
+        weeklyActions:
+          type: array
+          items:
+            type: string
+        todayKickCount:
+          type: integer
+        upcomingAppointmentsCount:
+          type: integer
+        nextAppointment:
+          $ref: "#/components/schemas/Appointment"
+          nullable: true
+        symptomsLoggedToday:
+          type: integer
+        trimesterProgress:
+          type: number
+          description: Percentage progress within current trimester (0-100)
+      required: [currentWeek, trimester, daysUntilDue, dueDate, babySizeComparison, developmentHighlight, weeklyActions, todayKickCount, upcomingAppointmentsCount, symptomsLoggedToday, trimesterProgress]
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [symptom, kick, appointment_created, appointment_completed]
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      required: [id, type, description, timestamp]
+
+    # ── ANONYMOUS ANALYTICS / ADMIN ──
+    AdminAnalytics:
+      type: object
+      properties:
+        totalEvents:
+          type: integer
+        activeDays:
+          type: integer
+        eventCounts:
+          type: array
+          items:
+            type: object
+            properties:
+              eventType:
+                type: string
+              count:
+                type: integer
+            required: [eventType, count]
+        dailyCounts:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              count:
+                type: integer
+            required: [date, count]
+      required: [totalEvents, activeDays, eventCounts, dailyCounts]
+
+    AnalyticsEventInput:
+      type: object
+      properties:
+        eventType:
+          type: string
+          enum: [app_opened, screen_home, screen_track, screen_appointments, screen_benefits, screen_profile, benefits_viewed, eligibility_check_started]
+      required: [eventType]
+
+    AnalyticsEventReceipt:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+      required: [accepted]
