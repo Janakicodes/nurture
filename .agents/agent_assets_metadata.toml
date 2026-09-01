@@ -1,0 +1,56 @@
+uploads = []
+
+[[generated]]
+id = "fOtTKfmgmxYOO85fMxu-t"
+uri = "file://artifacts/nurture-mobile/assets/images/icon.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "AfHAX_ud8IddXHnCVdsLw"
+uri = "file://screenshots/nurture-mobile-dashboard.jpg"
+type = "image"
+title = "Nurture mobile dashboard"
+description = "Current mobile home dashboard screen."
+
+[[outputs]]
+id = "SJxjrC5k_byEWZD6wjS1x"
+uri = "file://screenshots/nurture-mobile-track.jpg"
+type = "image"
+title = "Nurture tracking screen"
+description = "Kick and symptom tracking screen."
+
+[[outputs]]
+id = "vnGxfsgAXNfnJLYdEokuK"
+uri = "file://screenshots/nurture-mobile-appointments.jpg"
+type = "image"
+title = "Nurture appointments screen"
+description = "Appointment planning and suggested visits screen."
+
+[[outputs]]
+id = "wAqdZN0NpdBlvXi-hP_nR"
+uri = "file://screenshots/nurture-mobile-benefits.jpg"
+type = "image"
+title = "Nurture benefits screen"
+description = "Indian maternity benefits and eligibility screen."
+
+[[outputs]]
+id = "5gr-15Y6mxXdBYqKdcudS"
+uri = "file://screenshots/nurture-mobile-profile.jpg"
+type = "image"
+title = "Nurture profile screen"
+description = "Pregnancy profile, settings, and export actions screen."
+
+[[outputs]]
+id = "CVURP1jetusX5Iit8-h0W"
+uri = "file://docs/nurture-mobile-prd.md"
+type = "text"
+title = "Nurture mobile PRD"
+description = "Product requirements document for the Nurture mobile app."
+
+[[outputs]]
+id = "VwIPKZ0gOVjKcfGLGeNl0"
+uri = "file://downloads/nurture-mobile-screens-and-prd.zip"
+type = "unspecified"
+title = "Nurture screens and PRD download pack"
+description = "ZIP containing five current mobile screenshots and the complete mobile PRD."
