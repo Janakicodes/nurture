@@ -1,0 +1,457 @@
+Pregnancy App 
+1. Product Vision Document
+Product Name
+Nurture (Working Title)
+Vision Statement
+To create a trusted, privacy-first pregnancy companion for Indian users that provides clear weekly guidance, appointment support, pregnancy tracking, and government benefit awareness.
+Mission
+Help pregnant women make informed, timely, and confident decisions throughout pregnancy using simple and actionable guidance.
+Problem Statement
+Most pregnancy apps focus primarily on generic tracking and informational content. Indian users often face additional challenges:
+Lack of awareness of maternity schemes and benefits
+Difficulty tracking appointments and care routines
+Overwhelming or non-localized information
+Privacy concerns
+Limited culturally relevant guidance
+Target Audience
+Primary Audience
+Pregnant women aged 22–38
+First-time mothers
+Urban and semi-urban users in India
+Secondary Audience
+Husbands and family members
+Healthcare providers
+ASHA workers and maternity support organizations
+Core Value Proposition
+"Know exactly what to do each week during pregnancy — medically and practically."
+Business Goals
+Acquire 1,000 active users in first launch region
+Achieve 30% Day-7 retention
+Improve pregnancy appointment adherence
+Build a trusted maternal health platform
+
+2. Product Scope Document
+In Scope (MVP)
+User Features
+User onboarding
+Due date calculation
+Pregnancy week tracking
+Weekly guidance dashboard
+Symptom tracking
+Kick counter
+Appointment management
+Reminder notifications
+India maternity benefits module
+Privacy controls
+Admin Features
+Weekly content management
+Benefits information management
+Notification configuration
+Analytics dashboard
+
+Out of Scope (Future Phases)
+Community forums
+Doctor consultation
+AI chatbot
+Financial investment recommendations
+Document vault
+Advanced multilingual voice support
+Wearable integration
+
+3. Functional Requirements Document (FRD)
+Module 1: User Onboarding
+Objective
+Collect pregnancy details and personalize the app experience.
+Functional Requirements
+FR-001
+System shall allow users to sign in anonymously or using mobile/email.
+FR-002
+System shall allow users to enter:
+Due date
+OR
+Last menstrual period (LMP)
+FR-003
+System shall calculate expected due date using pregnancy calculation logic.
+FR-004
+System shall determine current pregnancy week.
+FR-005
+System shall store onboarding details securely.
+Acceptance Criteria
+User can complete onboarding in under 2 minutes.
+Pregnancy week displays correctly.
+
+Module 2: Weekly Dashboard
+Objective
+Provide weekly pregnancy guidance and recommended actions.
+Functional Requirements
+FR-006
+System shall display:
+Current pregnancy week
+Trimester
+Baby development summary
+Weekly action list
+FR-007
+System shall dynamically update content based on pregnancy week.
+FR-008
+System shall display alerts or warning guidance where applicable.
+Acceptance Criteria
+Dashboard loads within 2 seconds.
+Weekly content changes automatically.
+
+Module 3: Symptom Tracking
+Objective
+Enable users to quickly log symptoms.
+Functional Requirements
+FR-009
+System shall provide predefined symptom options.
+FR-010
+System shall allow daily symptom logging.
+FR-011
+System shall store symptom history.
+Acceptance Criteria
+Symptom can be logged in under 10 seconds.
+
+Module 4: Kick Counter
+Objective
+Allow users to track fetal movements.
+Functional Requirements
+FR-012
+System shall provide a one-tap kick counting mechanism.
+FR-013
+System shall store daily kick counts.
+FR-014
+System shall allow reset of daily session.
+Acceptance Criteria
+Counter increments without lag.
+
+Module 5: Appointment Management
+Objective
+Improve pregnancy appointment adherence.
+Functional Requirements
+FR-015
+System shall allow users to create appointments.
+FR-016
+System shall allow users to:
+Select date
+Select time
+Enable reminders
+FR-017
+System shall trigger reminder notifications.
+FR-018
+System shall allow marking appointments as completed.
+Acceptance Criteria
+Reminder notification triggers correctly.
+
+Module 6: Government Benefits Module
+Objective
+Increase awareness of maternity support schemes.
+Functional Requirements
+FR-019
+System shall display maternity scheme information.
+FR-020
+System shall provide eligibility questionnaires.
+FR-021
+System shall display required documents.
+FR-022
+System shall provide next-step guidance.
+Acceptance Criteria
+Eligibility results display correctly.
+
+Module 7: Notifications
+Objective
+Improve retention and adherence.
+Functional Requirements
+FR-023
+System shall send weekly pregnancy notifications.
+FR-024
+System shall send appointment reminders.
+FR-025
+System shall send engagement nudges.
+Acceptance Criteria
+Notification delivery success rate >95%.
+
+4. Non-Functional Requirements Document (NFR)
+Performance
+App launch time <3 seconds
+Dashboard load time <2 seconds
+Security
+Encrypt data in transit and at rest
+Secure authentication
+Role-based access for admin
+Availability
+99% uptime target
+Scalability
+Support 100,000+ users
+Accessibility
+Large touch targets
+Readable typography
+Simple language
+Privacy
+User data deletion support
+Minimal data collection
+Explicit consent collection
+
+5. User Stories
+Epic: Onboarding
+User Story US-001
+As a pregnant user,
+I want to enter my due date,
+So that I can receive personalized weekly guidance.
+User Story US-002
+As a user,
+I want quick onboarding,
+So that I can start using the app immediately.
+
+Epic: Weekly Guidance
+User Story US-003
+As a pregnant user,
+I want to know what to do each week,
+So that I feel informed and prepared.
+
+Epic: Appointments
+User Story US-004
+As a user,
+I want reminders for appointments,
+So that I do not miss important visits.
+
+Epic: Benefits
+User Story US-005
+As a user,
+I want to check maternity benefit eligibility,
+So that I can access available support.
+
+6. User Journey Documentation
+Journey 1: New User Onboarding
+Steps
+User downloads app
+Opens app
+Clicks Get Started
+Enters due date or LMP
+Enables notifications
+Lands on Home Dashboard
+Success Criteria
+User completes onboarding
+User reaches dashboard
+
+Journey 2: Daily Usage
+Steps
+User opens app
+Views weekly guidance
+Logs symptom or movement
+Exits app
+Success Criteria
+User engages with weekly guidance
+
+Journey 3: Appointment Reminder
+Steps
+User adds appointment
+Reminder notification sent
+User attends appointment
+Marks appointment completed
+Success Criteria
+Increased appointment adherence
+
+7. Information Architecture
+Navigation Structure
+Bottom Navigation
+Home
+Track
+Appointments
+Benefits
+
+Home
+Weekly summary
+Baby development
+Weekly actions
+Alerts
+
+Track
+Symptoms
+Kick counter
+Daily logs
+
+Appointments
+Upcoming appointments
+Add appointment
+Reminder settings
+
+Benefits
+Eligibility checker
+Scheme details
+Document checklist
+
+8. Data Model Documentation
+User Collection
+Fields:
+user_id
+due_date
+pregnancy_week
+first_pregnancy
+created_at
+
+Symptoms Collection
+Fields:
+symptom_id
+user_id
+symptom_type
+timestamp
+
+Appointments Collection
+Fields:
+appointment_id
+user_id
+title
+date
+reminder_enabled
+status
+
+Kick Counts Collection
+Fields:
+session_id
+user_id
+kick_count
+created_at
+
+9. Analytics & KPI Documentation
+North Star Metric
+Active Healthy Pregnancies (AHP)
+Definition:
+Users who:
+Open app weekly
+Log activity
+Follow at least one recommendation
+
+Core Metrics
+Acquisition
+New users
+Install-to-signup conversion
+Activation
+Due date entry rate
+Weekly dashboard views
+Engagement
+Weekly active users
+Sessions per week
+Retention
+Day 1 retention
+Day 7 retention
+Day 30 retention
+Behavior Metrics
+Appointment completion rate
+Reminder adherence
+Benefits eligibility checks
+
+10. Privacy & Compliance Documentation
+Privacy Principles
+Minimal data collection
+Explicit consent
+Data encryption
+User-controlled deletion
+
+DPDP Compliance Requirements
+Requirements
+Clear privacy notice
+Purpose limitation
+Consent management
+Data deletion flow
+Retention policy
+
+Security Requirements
+HTTPS mandatory
+Firebase security rules
+Secure authentication
+Audit logging
+
+11. Technical Architecture Overview
+Frontend
+Flutter
+Backend
+Firebase
+Services
+Firebase Authentication
+Firestore Database
+Firebase Cloud Messaging
+Firebase Analytics
+
+12. Release Plan
+Phase 1 — Discovery
+Weeks 1–2
+User interviews
+Competitor analysis
+Feature validation
+
+Phase 2 — Design
+Weeks 3–4
+Wireframes
+UI design
+Prototype testing
+
+Phase 3 — Development
+Weeks 5–10
+Build MVP
+Backend setup
+Notification integration
+
+Phase 4 — QA & Beta
+Weeks 11–12
+Functional testing
+Security checks
+Closed beta
+
+13. Risk Register
+Risk
+Impact
+Mitigation
+Incorrect medical information
+High
+Medical review process
+Low retention
+High
+Improve weekly guidance
+Notification failures
+Medium
+FCM monitoring
+Scope creep
+High
+Strict MVP control
+Privacy concerns
+High
+Transparent privacy policy
+
+
+14. Success Criteria
+Product Success
+1,000 onboarded users
+30% Day-7 retention
+50% weekly engagement
+User Success
+Improved appointment adherence
+Increased benefits awareness
+Reduced pregnancy confusion
+
+15. Future Roadmap
+Phase 2 Features
+Multilingual support
+Expanded schemes
+Doctor partnerships
+Personalized guidance
+
+Phase 3 Features
+Newborn tracking
+Vaccination reminders
+Baby savings guidance
+Family support tools
+
+16. Appendix
+Suggested Tools
+Design
+Figma
+Development
+Flutter
+Firebase
+GitHub
+Analytics
+Firebase Analytics
+Google Looker Studio
+
+End of Documentation
+
